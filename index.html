@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#1e40af" />
+    <meta name="description" content="PWA Device Capability Tester" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <title>Device Tester</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>Device Tester</h1>
+        <p class="subtitle">PWA Capabilities fuer Handlager</p>
+      </header>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="camera">Camera</button>
+        <button class="tab" data-tab="scanner">Scanner</button>
+        <button class="tab" data-tab="storage">Storage</button>
+        <button class="tab" data-tab="offline">Offline</button>
+        <button class="tab" data-tab="push">Push</button>
+        <button class="tab" data-tab="install">Install</button>
+      </nav>
+
+      <main>
+        <!-- Camera Tab -->
+        <section id="camera" class="tab-content active">
+          <h2>Kamera-Test</h2>
+          <div class="status" id="camera-status">Status: Nicht gestartet</div>
+          <div class="camera-container">
+            <video id="camera-preview" autoplay playsinline></video>
+            <canvas id="camera-canvas" style="display:none;"></canvas>
+          </div>
+          <div class="controls">
+            <button id="camera-start" class="btn primary">Kamera starten</button>
+            <button id="camera-capture" class="btn" disabled>Foto aufnehmen</button>
+            <button id="camera-switch" class="btn" disabled>Kamera wechseln</button>
+          </div>
+          <div id="camera-result"></div>
+        </section>
+
+        <!-- Scanner Tab -->
+        <section id="scanner" class="tab-content">
+          <h2>Barcode/QR Scanner</h2>
+          <div class="status" id="scanner-status">Status: Nicht gestartet</div>
+          <div class="info-box">
+            <strong>BarcodeDetector API:</strong> <span id="barcode-api-status">Pruefe...</span>
+          </div>
+          <div class="camera-container">
+            <video id="scanner-preview" autoplay playsinline></video>
+            <div class="scan-overlay"></div>
+          </div>
+          <div class="controls">
+            <button id="scanner-start" class="btn primary">Scanner starten</button>
+            <button id="scanner-stop" class="btn" disabled>Stoppen</button>
+          </div>
+          <div id="scanner-result" class="result-box"></div>
+          <div id="scanner-history" class="history"></div>
+        </section>
+
+        <!-- Storage Tab -->
+        <section id="storage" class="tab-content">
+          <h2>Lokaler Speicher (IndexedDB)</h2>
+          <div class="status" id="storage-status">Status: Nicht getestet</div>
+          <div class="info-box">
+            <strong>IndexedDB:</strong> <span id="indexeddb-status">Pruefe...</span><br>
+            <strong>localStorage:</strong> <span id="localstorage-status">Pruefe...</span><br>
+            <strong>Storage Quota:</strong> <span id="storage-quota">Pruefe...</span>
+          </div>
+          <div class="controls">
+            <input type="text" id="storage-key" placeholder="Key" value="test-artikel" />
+            <input type="text" id="storage-value" placeholder="Value" value="Kabel Cat6 10m" />
+            <button id="storage-save" class="btn primary">Speichern</button>
+            <button id="storage-load" class="btn">Laden</button>
+            <button id="storage-clear" class="btn danger">Loeschen</button>
+          </div>
+          <div id="storage-result" class="result-box"></div>
+        </section>
+
+        <!-- Offline Tab -->
+        <section id="offline" class="tab-content">
+          <h2>Offline-Faehigkeit</h2>
+          <div class="status" id="offline-status">Status: Pruefe...</div>
+          <div class="info-box">
+            <strong>Service Worker:</strong> <span id="sw-status">Pruefe...</span><br>
+            <strong>Online:</strong> <span id="online-status">Pruefe...</span><br>
+            <strong>Cache API:</strong> <span id="cache-status">Pruefe...</span>
+          </div>
+          <div class="controls">
+            <button id="offline-test" class="btn primary">Offline simulieren</button>
+            <button id="cache-clear" class="btn danger">Cache leeren</button>
+          </div>
+          <div class="hint">
+            Teste: Schalte WLAN/Mobile aus und lade die Seite neu.
+          </div>
+          <div id="offline-result" class="result-box"></div>
+        </section>
+
+        <!-- Push Tab -->
+        <section id="push" class="tab-content">
+          <h2>Push Notifications</h2>
+          <div class="status" id="push-status">Status: Nicht getestet</div>
+          <div class="info-box">
+            <strong>Notification API:</strong> <span id="notification-api">Pruefe...</span><br>
+            <strong>Permission:</strong> <span id="notification-permission">Pruefe...</span><br>
+            <strong>Push API:</strong> <span id="push-api">Pruefe...</span>
+          </div>
+          <div class="controls">
+            <button id="push-request" class="btn primary">Permission anfragen</button>
+            <button id="push-test" class="btn" disabled>Test-Notification senden</button>
+          </div>
+          <div id="push-result" class="result-box"></div>
+        </section>
+
+        <!-- Install Tab -->
+        <section id="install" class="tab-content">
+          <h2>PWA Installation</h2>
+          <div class="status" id="install-status">Status: Pruefe...</div>
+          <div class="info-box">
+            <strong>Standalone Mode:</strong> <span id="standalone-status">Pruefe...</span><br>
+            <strong>Install Prompt:</strong> <span id="install-prompt-status">Warte auf Event...</span><br>
+            <strong>Display Mode:</strong> <span id="display-mode">Pruefe...</span>
+          </div>
+          <div class="controls">
+            <button id="install-btn" class="btn primary" disabled>Installieren</button>
+          </div>
+          <div class="hint">
+            Die App muss ueber HTTPS geladen werden fuer Installation.
+          </div>
+          <div id="install-result" class="result-box"></div>
+        </section>
+      </main>
+
+      <footer>
+        <div id="connection-status" class="connection online">Online</div>
+        <div class="version">v0.1 | pilot-handlager POC</div>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
